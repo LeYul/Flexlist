@@ -1,0 +1,34 @@
+# Flexlist — stack à coller dans Portainer (Stacks › Add stack › Web editor).
+# Aucune image à construire : on utilise l'image officielle Node.js et le code
+# déposé dans \\NAS-Yul\Docker\Flexlist\app (monté en lecture seule).
+services:
+  flexlist:
+    image: node:24-alpine
+    container_name: flexlist
+    restart: unless-stopped
+    working_dir: /app
+    command: ["node", "server/index.js"]
+    ports:
+      - "18787:8787"        # même convention que Radarr (17878) / Sonarr (18989)
+    environment:
+      - TZ=Europe/Paris
+      - PORT=8787
+      - DATA_DIR=/data
+      - LIBRARY_PATH=/netflex
+      - RADARR_URL=http://192.168.1.54:17878
+      - SONARR_URL=http://192.168.1.54:18989
+      # Facultatif : les clés API peuvent aussi être saisies dans Réglages de l'application.
+      - RADARR_API_KEY=
+      - SONARR_API_KEY=
+      # Facultatif : mot de passe d'accès à l'application.
+      - APP_PASSWORD=
+    volumes:
+      - /volume1/Docker/Flexlist/app:/app:ro
+      - /volume1/Docker/Flexlist/data:/data
+      - /volume1/home/Yul/NETFLEX:/netflex:ro   # vidéothèque, en LECTURE SEULE
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8787/api/auth"]
+      interval: 60s
+      timeout: 5s
+      retries: 3
+      start_period: 20s

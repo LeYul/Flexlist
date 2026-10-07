@@ -1,0 +1,14 @@
+{
+  "name": "flexlist",
+  "version": "1.0.0",
+  "description": "Favoris films & séries pour la vidéothèque NETFLEX, avec envoi automatique vers Radarr / Sonarr.",
+  "private": true,
+  "type": "module",
+  "main": "server/index.js",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node server/index.js"
+  }
+}
